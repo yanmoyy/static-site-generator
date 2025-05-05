@@ -34,6 +34,44 @@ def split_nodes_delimiter(
     return reduce(lambda acc, x: acc + x, map(process_node, old_nodes), [])
 
 
+def process_node_link(node: TextNode, text_type: TextType):
+    if node.text_type != TextType.TEXT:
+        return [node]
+    is_image = text_type == TextType.IMAGE
+    text_left = node.text
+    prefix = "!" if is_image else ""
+
+    matches = (
+        extract_markdown_images(text_left)
+        if is_image
+        else extract_markdown_links(text_left)
+    )
+    nodes = []
+    for match in matches:
+        alt, link = match
+        text, text_left = text_left.split(f"{prefix}[{alt}]({link})", 1)
+        if text != "":
+            nodes.append(TextNode(text))
+        nodes.append(TextNode(alt, text_type, link))
+    return nodes
+
+
+def split_nodes_image(old_nodes):
+    return reduce(
+        lambda acc, x: acc + x,
+        map(lambda x: process_node_link(x, TextType.IMAGE), old_nodes),
+        [],
+    )
+
+
+def split_nodes_link(old_nodes):
+    return reduce(
+        lambda acc, x: acc + x,
+        map(lambda x: process_node_link(x, TextType.LINK), old_nodes),
+        [],
+    )
+
+
 def extract_markdown_images(text):
     pattern = r"!\[([^\[\]]*)\]\(([^\(\)]*)\)"
     matches = re.findall(pattern, text)
