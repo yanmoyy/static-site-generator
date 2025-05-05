@@ -1,3 +1,4 @@
+import re
 from functools import reduce
 from typing import List
 
@@ -31,3 +32,15 @@ def split_nodes_delimiter(
 
     # Flatten the list of lists into a single list of nodes
     return reduce(lambda acc, x: acc + x, map(process_node, old_nodes), [])
+
+
+def extract_markdown_images(text):
+    pattern = r"!\[([^\[\]]*)\]\(([^\(\)]*)\)"
+    matches = re.findall(pattern, text)
+    return matches
+
+
+def extract_markdown_links(text):
+    pattern = r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)"
+    matches = re.findall(pattern, text)
+    return matches
