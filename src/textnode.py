@@ -6,7 +6,7 @@ from htmlnode import LeafNode
 class TextType(Enum):
     TEXT = "text"
     BOLD = "bold"
-    ITALIC = "itali"
+    ITALIC = "italic"
     CODE = "code"
     LINK = "link"
     IMAGE = "image"

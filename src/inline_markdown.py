@@ -5,6 +5,16 @@ from typing import List
 from textnode import TextNode, TextType
 
 
+def text_to_textnodes(text):
+    nodes = [TextNode(text, TextType.TEXT)]
+    nodes = split_nodes_delimiter(nodes, "**", TextType.BOLD)
+    nodes = split_nodes_delimiter(nodes, "_", TextType.ITALIC)
+    nodes = split_nodes_delimiter(nodes, "`", TextType.CODE)
+    nodes = split_nodes_image(nodes)
+    nodes = split_nodes_link(nodes)
+    return nodes
+
+
 def split_nodes_delimiter(
     old_nodes: List[TextNode], delimiter: str, text_type: TextType
 ):
@@ -53,6 +63,8 @@ def process_node_link(node: TextNode, text_type: TextType):
         if text != "":
             nodes.append(TextNode(text))
         nodes.append(TextNode(alt, text_type, link))
+    if text_left != "":
+        nodes.append(TextNode(text_left))
     return nodes
 
 
