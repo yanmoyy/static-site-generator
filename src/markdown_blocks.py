@@ -144,3 +144,14 @@ def text_to_children(text):
     text_nodes = text_to_textnodes(text)
     html_nodes = list(map(text_node_to_html_node, text_nodes))
     return html_nodes
+
+
+def extract_title(markdown: str):
+    blocks = markdown_to_blocks(markdown)
+    if len(blocks) == 0:
+        raise Exception("no content")
+    items = blocks[0].split("\n", maxsplit=1)
+    if not items[0].startswith("# "):
+        raise Exception("first line should be a title (H1)")
+    text = items[0].strip("# ")
+    return text
